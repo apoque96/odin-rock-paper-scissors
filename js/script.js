@@ -1,73 +1,78 @@
+const paperBtn = document.querySelector("#paper");
+const rockBtn = document.querySelector("#rock");
+const scissorsBtn = document.querySelector("#scissors");
+const result = document.querySelector("#result");
+const playerScoreUi = document.querySelector("#playerScore");
+const computerScoreUi = document.querySelector("#computerScore");
+const playerTxt = document.querySelector("#player");
+const computerTxt = document.querySelector("#computer");
+
+paperBtn.addEventListener('click', function(){round("paper")});
+rockBtn.addEventListener('click', function(){round("rock")});
+scissorsBtn.addEventListener('click', function(){round("scissors")});
+
 function getComputerChoice(){
     const choice = Math.floor(Math.random() * 3);
     switch(choice){
         case 0:
-            return "PAPER";
+            return "paper";
             break;
         case 1:
-            return "ROCK";
+            return "rock";
             break;
         default:
-            return "SCISSORS";
+            return "scissors";
             break;
     }
 }
 
-function getPlayerChoice(){
-    return prompt("Choose paper, rock or scissors");
-}
 // Returns the result of the round. True means that the player wins, false the computer wins
-function round(){
-    let playerSelection = getPlayerChoice();
-    playerSelection = playerSelection.toUpperCase();
+function round(playerSelection){
     let computerSelection = getComputerChoice();
 
     let playerWins = false;
 
     if(playerSelection == computerSelection){
-        alert("Tie!!! Re-playing round");
+        result.textContent = "Tie!!! Re-playing round";
         return round();
     }
 
     switch (playerSelection){
-        case "PAPER":
-            computerSelection == "ROCK" ? playerWins = true: playerWins = false;
+        case "paper":
+            computerSelection == "rock" ? playerWins = true: playerWins = false;
             break;
-        case "ROCK":
-            computerSelection == "SCISSORS" ? playerWins = true: playerWins = false;
+        case "rock":
+            computerSelection == "scissors" ? playerWins = true: playerWins = false;
             break;
-        case "SCISSORS":
-            computerSelection == "PAPER" ? playerWins = true: playerWins = false;
-            break;
-        default:
-            alert("Invalid input: please choose paper, rock or scissors");
-            return round();
-            break;   
+        case "scissors":
+            computerSelection == "paper" ? playerWins = true: playerWins = false;
+            break;  
     }
 
-    alert("Player choice: " + playerSelection + ". Computer choice: " + 
-           computerSelection + ". You " + (playerWins ? "win": "loose"));
-    return playerWins;
+    result.textContent = "The computer choose " + computerSelection +
+                            ". You " + (playerWins ? "win": "loose");
+    playerTxt.textContent = "Player: " + playerSelection;
+    computerTxt.textContent = "Computer: " + computerSelection;
+    updateScore(playerWins);
 }
 
-function game(){
-    let playerScore = 0;
-    let computerScore = 0;
-
-    alert("Playing BO5. Win three rounds to win the game!");
-
-    for(let i = 0; i < 5; i++){
-        round() ? playerScore++: computerScore++;
-        alert("Score: Player has won " + playerScore + " rounds. Computer has won " + computerScore + " rounds.");
-        if(playerScore >= 3){
-            alert("You won 3 rounds. You win the game!!!");
-            break;
-        }
-        if(computerScore >= 3){
-            alert("The computer won 3 rounds. You loose :C");
-            break;
-        }
+let playerScore = 0;
+let computerScore = 0;
+function updateScore(playerWins){
+    playerWins ? playerScore++: computerScore++;
+    playerScoreUi.textContent = "Player: " + playerScore;
+    computerScoreUi.textContent = "Computer: " + computerScore;
+    if(playerScore == 5){
+        result.textContent = "You won 5 games. You WIN!!!!";
+        restartGame();
+    }
+    if(computerScore == 5){
+        result.textContent = "The computer won 5 games. You loose :C";
+        restartGame();
     }
 }
 
-game();
+function restartGame(){
+    playerScore = 0;
+    computerScore = 0;
+}
